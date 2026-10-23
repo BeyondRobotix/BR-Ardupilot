@@ -177,17 +177,19 @@ PC6  TIM3_CH1 TIM3 PWM(8)  GPIO(57)
 # PWM outputs - AUX
 PC7  TIM3_CH2 TIM3 PWM(9)  GPIO(58)
 PB0  TIM3_CH3 TIM3 PWM(10) GPIO(59)
-# V1.6 hardware (PR-16): PWM 11 moved off PB1 (TIM3_CH4, a TT pin that
-# is not 5 V tolerant) to PA3 (TIM15_CH2, AF4, ball U2). PB1 is
-# unconnected on V1.6 and takes the DEFAULTGPIO state. PWM groups:
-# 1-4 TIM1, 5-7 TIM2, 8-10 TIM3, 11 TIM15, 12-14 TIM4, 15-18 TIM5.
-PA3  TIM15_CH2 TIM15 PWM(11) GPIO(60)
+# V1.6 hardware (PR-16): PWM 11 moved off PB1 (TIM3_CH4), a TT pin
+# that is not 5 V tolerant. The board reroutes PH12 (TIM5_CH3, FT,
+# ball R14), which drove PWM 17, to PWM 11's stack pin J105.73, so
+# PH12 is PWM 11 and output 17 is retired (J104.26 is NC). PI0 stays
+# PWM 18. PB1 and PA3 are unconnected on V1.6 and take the DEFAULTGPIO
+# state. PWM groups: 1-4 TIM1, 5-7 TIM2, 8-10 TIM3, 12-14 TIM4,
+# 11/15/16/18 TIM5.
+PH12 TIM5_CH3 TIM5 PWM(11) GPIO(60)
 PB7  TIM4_CH2 TIM4 PWM(12) GPIO(61)
 PD14 TIM4_CH3 TIM4 PWM(13) GPIO(62)
 PD15 TIM4_CH4 TIM4 PWM(14) GPIO(63)
 PA0  TIM5_CH1 TIM5 PWM(15) GPIO(64)
 PH11 TIM5_CH2 TIM5 PWM(16) GPIO(65)
-PH12 TIM5_CH3 TIM5 PWM(17) GPIO(66)
 PI0  TIM5_CH4 TIM5 PWM(18) GPIO(67)
 
 # Extra GPIOs

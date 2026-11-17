@@ -1,0 +1,92 @@
+# Beyond Robotix firmware release (fork only, not part of upstream ArduPilot)
+#
+# Push an annotated tag named <BOARD>-v<MAJOR>.<MINOR>.<PATCH>, e.g.
+#   git tag -a BR_GNSS_MAG-v1.0.0 -m "BR_GNSS_MAG v1.0.0"
+#   git push origin BR_GNSS_MAG-v1.0.0
+# This builds AP_Periph for <BOARD> from a clean checkout of the tag and
+# publishes a GitHub Release with the binaries attached.
+
+name: BR firmware release
+
+on:
+  push:
+    tags:
+      - 'BR_*-v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    if: github.repository == 'BeyondRobotix/ardupilot'
+    runs-on: ubuntu-22.04
+    container: ardupilot/ardupilot-dev-chibios:v0.1.3
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: 'recursive'
+          fetch-depth: 0
+
+      - name: Parse tag
+        id: tag
+        shell: bash
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          BOARD="${TAG%-v*}"
+          VERSION="${TAG##*-v}"
+          if [ ! -f "libraries/AP_HAL_ChibiOS/hwdef/${BOARD}/hwdef.dat" ]; then
+            echo "No hwdef for board '${BOARD}' (from tag '${TAG}')" >&2
+            exit 1
+          fi
+          echo "board=${BOARD}" >> "$GITHUB_OUTPUT"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Build AP_Periph
+        shell: bash
+        run: |
+          git config --global --add safe.directory ${GITHUB_WORKSPACE}
+          PATH="/opt/gcc-arm-none-eabi-10/bin:$PATH"
+          ./waf configure --board "${{ steps.tag.outputs.board }}"
+          ./waf AP_Periph
+
+      - name: Collect release files
+        id: files
+        shell: bash
+        run: |
+          BOARD="${{ steps.tag.outputs.board }}"
+          VERSION="${{ steps.tag.outputs.version }}"
+          HASH="$(git rev-parse --short=8 HEAD)"
+          OUT="release"
+          mkdir -p "$OUT"
+          P="${BOARD}_v${VERSION}"
+          cp "build/${BOARD}/bin/AP_Periph.bin"          "$OUT/${P}.bin"
+          cp "build/${BOARD}/bin/AP_Periph.apj"          "$OUT/${P}.apj"
+          cp "build/${BOARD}/bin/AP_Periph_with_bl.hex"  "$OUT/${P}_with_bl.hex"
+          if [ -f "Tools/bootloaders/${BOARD}_bl.bin" ]; then
+            cp "Tools/bootloaders/${BOARD}_bl.bin" "$OUT/${BOARD}_bl.bin"
+          fi
+          (cd "$OUT" && sha256sum * > SHA256SUMS.txt)
+          {
+            echo "Firmware for **${BOARD}**, version **${VERSION}**"
+            echo
+            echo "- Git commit: \`${HASH}\` (reported over DroneCAN as the software version's VCS commit)"
+            echo "- Base: AP_Periph $(grep -o 'AP_Periph V[^\"]*' Tools/AP_Periph/version.h)"
+            echo
+            echo "| File | Use |"
+            echo "|---|---|"
+            echo "| \`${P}.bin\` | Update a node over DroneCAN (DroneCAN GUI Tool / Mission Planner) |"
+            echo "| \`${P}_with_bl.hex\` | Production flashing with an ST-Link (bootloader + app) |"
+            echo "| \`${P}.apj\` | APJ package |"
+            echo "| \`${BOARD}_bl.bin\` | Bootloader only |"
+            echo
+            echo "## Changes"
+            echo
+            git tag -l --format='%(contents)' "${GITHUB_REF_NAME}"
+          } > notes.md
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ steps.tag.outputs.board }} v${{ steps.tag.outputs.version }}
+          body_path: notes.md
+          files: release/*

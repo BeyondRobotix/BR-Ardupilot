@@ -49,8 +49,10 @@ commits across, rather than rebasing the old branch.
 |---|---|---|---|
 | `Micro-Node-Periph-4.7.3` | `BeyondRobotixM-Periph` | `AP_Periph-4.7.3` | Micro Node (STM32L431) AP_Periph firmware. Also runs on the CAN Node and the Node Development Board. |
 | `CAN-Node-Plus-Periph-4.7.3` | `BR_CANNodePlus` | `AP_Periph-4.7.3` | CAN Node Plus (STM32H723) AP_Periph firmware. |
-| `Micro-Node-hwdef-2` | `BeyondRobotixM`, `BeyondRobotixM-Periph` | master, Mar 2025 | **Superseded** by `Micro-Node-Periph-4.7.3`. Embeds an ArduPilot bootloader. |
-| `CAN-Node-Plus-Periph` | `BR_CANNodePlus` | master, Aug 2026 | **Superseded** by `CAN-Node-Plus-Periph-4.7.3`. |
+
+The older branches `Micro-Node-hwdef-2` and `CAN-Node-Plus-Periph` were
+retired. Their last commits are kept as the tags `archive/Micro-Node-hwdef-2`
+and `archive/CAN-Node-Plus-Periph`.
 
 Every CAN node ships with [BR_bootloader](https://github.com/BeyondRobotix/BR_bootloader),
 whether it runs AP_Periph or Arduino DroneCAN, so either firmware can be

@@ -69,7 +69,7 @@ Other peripherals:
 | `GNSS-MAG-Combo` | `BR_GNSS_MAG`, `BR_GNSS_DAN_F10N`, `BR_Mag_RM3100` | Combined GNSS + magnetometer node. |
 | `BR_GNSS_DAN_F10N` | `BR_GNSS_DAN_F10N`, `BR_Mag_RM3100` | u-blox DAN-F10N GNSS node. |
 | `BR_MAG_RM3100` | `BR_Mag_RM3100` | RM3100 magnetometer node. |
-| `ArduinoDroneCAN-Bootloader` | `BeyondRobotixM` | Modified AP_Bootloader for the Arduino DroneCAN (Micro Node) board, May 2025. Predates BR_bootloader, which the CAN nodes now ship with. |
+| `ArduinoDroneCAN-Bootloader` | `BeyondRobotixM` | **Obsolete.** Modified AP_Bootloader for the Arduino DroneCAN (Micro Node) board, May 2025. Replaced by BR_bootloader, which every CAN node now ships with. Don't use. |
 
 ### Features
 

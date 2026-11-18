@@ -67,6 +67,11 @@ PC11 USART3_RX USART3
 PB9 UART4_TX UART4
 PB8 UART4_RX UART4
 
+# printf() and debug output go to the debug header, not USB. Output
+# before AP_Periph applies UART3_OPTIONS is sent unswapped and lost
+STDOUT_SERIAL SD4
+STDOUT_BAUDRATE 115200
+
 # I2C on the S2+I2C connector, pull-ups fitted on the board
 I2C_ORDER I2C2
 PB10 I2C2_SCL I2C2

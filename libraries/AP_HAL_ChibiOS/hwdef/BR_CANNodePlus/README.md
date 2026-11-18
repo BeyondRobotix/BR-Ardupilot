@@ -42,7 +42,7 @@ openocd -f interface/stlink.cfg -f target/stm32h7x.cfg \
 | USB-C | SERIAL0 | PA11/PA12 | console |
 | S1 | SERIAL1 (USART2) | TX PD5, RX PD6, CTS PD3, RTS PD4 | |
 | S2+I2C | SERIAL2 (USART3), I2C2 | TX PC10, RX PC11, SCL PB10, SDA PB11 | GPS and compass by default |
-| Debug header | SERIAL3 (UART4) | PB8/PB9 | TX/RX swapped on the board, `UART3_OPTIONS` 8 by default |
+| Debug header | SERIAL3 (UART4) | PB8/PB9 | debug output (`printf`), 115200 baud. TX/RX swapped on the board, `UART3_OPTIONS` 8 by default |
 | C1 | CAN1 | PD0/PD1 | |
 | C2 | CAN2 | PB5/PB6 | |
 | PWM | PWM 1-8 | PA3, PA2, PA1, PE13, PA9, PA8, PC7, PC6 | |
